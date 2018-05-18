@@ -36,8 +36,8 @@ var getUid = require('get-uid');
 var inherits = require('inherits');
 
 var win = window,
-	doc = document,
-	root = doc.documentElement;
+    doc = document,
+    root = doc.documentElement;
 
 /**
  * Draggable controllers associated with elements.
@@ -50,7 +50,7 @@ var win = window,
  *
  * That is why weakmap.
  */
-var draggableCache = (Draggable.cache = new WeakMap());
+var draggableCache = Draggable.cache = new WeakMap();
 
 /**
  * Make an element draggable.
@@ -128,15 +128,15 @@ Draggable.prototype.css3 = true;
 Draggable.prototype.axis = null;
 
 /** Init droppable "plugin" */
-Draggable.prototype.initDroppable = function() {
+Draggable.prototype.initDroppable = function () {
 	var that = this;
 
-	on(that, 'dragstart', function() {
+	on(that, 'dragstart', function () {
 		var that = this;
 		that.dropTargets = q(that.droppable);
 	});
 
-	on(that, 'drag', function() {
+	on(that, 'drag', function () {
 		var that = this;
 
 		if (!that.dropTargets) {
@@ -145,7 +145,7 @@ Draggable.prototype.initDroppable = function() {
 
 		var thatRect = offsets(that.element);
 
-		that.dropTargets.forEach(function(dropTarget) {
+		that.dropTargets.forEach(function (dropTarget) {
 			var targetRect = offsets(dropTarget);
 
 			if (intersect(thatRect, targetRect, that.droppableTolerance)) {
@@ -172,7 +172,7 @@ Draggable.prototype.initDroppable = function() {
 		});
 	});
 
-	on(that, 'dragend', function() {
+	on(that, 'dragend', function () {
 		var that = this;
 
 		//emit drop, if any
@@ -214,7 +214,7 @@ Draggable.prototype.state = {
 			that.deltaX = 0;
 			that.deltaY = 0;
 
-			on(doc, 'mousedown' + that._ns + ' touchstart' + that._ns, function(e) {
+			on(doc, 'mousedown' + that._ns + ' touchstart' + that._ns, function (e) {
 				//ignore non-draggy events
 				if (!e.draggies) {
 					return;
@@ -250,7 +250,7 @@ Draggable.prototype.state = {
 
 			//set up tracking
 			if (that.release) {
-				that._trackingInterval = setInterval(function(e) {
+				that._trackingInterval = setInterval(function (e) {
 					var now = Date.now();
 					var elapsed = now - that.timestamp;
 
@@ -263,10 +263,7 @@ Draggable.prototype.state = {
 					var delta = Math.sqrt(dX * dX + dY * dY);
 
 					//get speed as average of prev and current (prevent div by zero)
-					var v = Math.min(
-						that.velocity * delta / (1 + elapsed),
-						that.maxSpeed,
-					);
+					var v = Math.min(that.velocity * delta / (1 + elapsed), that.maxSpeed);
 					that.speed = 0.8 * v + 0.2 * that.speed;
 
 					//get new angle as a last diff
@@ -278,7 +275,7 @@ Draggable.prototype.state = {
 					return that;
 				}, that.framerate);
 			}
-		},
+		}
 	},
 
 	threshold: {
@@ -298,7 +295,7 @@ Draggable.prototype.state = {
 			emit(that.element, 'threshold');
 
 			//listen to doc movement
-			on(doc, 'touchmove' + that._ns + ' mousemove' + that._ns, function(e) {
+			on(doc, 'touchmove' + that._ns + ' mousemove' + that._ns, function (e) {
 				e.preventDefault();
 
 				//compare movement to the threshold
@@ -307,17 +304,12 @@ Draggable.prototype.state = {
 				var difX = that.prevMouseX - clientX;
 				var difY = that.prevMouseY - clientY;
 
-				if (
-					difX < that.threshold[0] ||
-					difX > that.threshold[2] ||
-					difY < that.threshold[1] ||
-					difY > that.threshold[3]
-				) {
+				if (difX < that.threshold[0] || difX > that.threshold[2] || difY < that.threshold[1] || difY > that.threshold[3]) {
 					that.update(e);
 					that.state = 'drag';
 				}
 			});
-			on(doc, 'mouseup' + that._ns + ' touchend' + that._ns + '', function(e) {
+			on(doc, 'mouseup' + that._ns + ' touchend' + that._ns + '', function (e) {
 				e.preventDefault();
 
 				//forget touches
@@ -333,7 +325,7 @@ Draggable.prototype.state = {
 			that.element.classList.remove('draggy-threshold');
 
 			off(doc, that._ns);
-		},
+		}
 	},
 
 	drag: {
@@ -354,31 +346,22 @@ Draggable.prototype.state = {
 			emit(that.element, 'drag', null, true);
 
 			//stop drag on leave
-			on(
-				doc,
-				'touchend' +
-					that._ns +
-					' mouseup' +
-					that._ns +
-					' mouseleave' +
-					that._ns,
-				function(e) {
-					e.preventDefault();
+			on(doc, 'touchend' + that._ns + ' mouseup' + that._ns + ' mouseleave' + that._ns, function (e) {
+				e.preventDefault();
 
-					//forget touches - dragend is called once
-					that.resetTouch();
+				//forget touches - dragend is called once
+				that.resetTouch();
 
-					//manage release movement
-					if (that.speed > 1) {
-						that.state = 'release';
-					} else {
-						that.state = 'idle';
-					}
-				},
-			);
+				//manage release movement
+				if (that.speed > 1) {
+					that.state = 'release';
+				} else {
+					that.state = 'idle';
+				}
+			});
 
 			//move via transform
-			on(doc, 'touchmove' + that._ns + ' mousemove' + that._ns, function(e) {
+			on(doc, 'touchmove' + that._ns + ' mousemove' + that._ns, function (e) {
 				that.drag(e);
 			});
 		},
@@ -399,7 +382,7 @@ Draggable.prototype.state = {
 			off(doc, that._ns);
 
 			clearInterval(that._trackingInterval);
-		},
+		}
 	},
 
 	release: {
@@ -413,22 +396,16 @@ Draggable.prototype.state = {
 
 			//set proper transition
 			css(that.element, {
-				transition:
-					that.releaseDuration +
-					'ms ease-out ' +
-					(that.css3 ? 'transform' : 'position'),
+				transition: that.releaseDuration + 'ms ease-out ' + (that.css3 ? 'transform' : 'position')
 			});
 
 			//plan leaving anim mode
-			that._animateTimeout = setTimeout(function() {
+			that._animateTimeout = setTimeout(function () {
 				that.state = 'idle';
 			}, that.releaseDuration);
 
 			//calc target point & animate to it
-			that.move(
-				that.prevX + that.speed * Math.cos(that.angle),
-				that.prevY + that.speed * Math.sin(that.angle),
-			);
+			that.move(that.prevX + that.speed * Math.cos(that.angle), that.prevY + that.speed * Math.sin(that.angle));
 
 			that.speed = 0;
 			that.emit('track');
@@ -440,15 +417,15 @@ Draggable.prototype.state = {
 			that.element.classList.remove('draggy-release');
 
 			css(this.element, {
-				transition: null,
+				transition: null
 			});
-		},
+		}
 	},
 
 	reset: function reset() {
 		var that = this;
 
-		that.currentHandles.forEach(function(handle) {
+		that.currentHandles.forEach(function (handle) {
 			off(handle, that._ns);
 		});
 
@@ -458,25 +435,25 @@ Draggable.prototype.state = {
 		off(that.element, that._ns);
 
 		return '_';
-	},
+	}
 };
 
 /** Drag handler. Needed to provide drag movement emulation via API */
-Draggable.prototype.drag = function(e) {
+Draggable.prototype.drag = function (e) {
 	var that = this;
 
 	e.preventDefault();
 
 	var mouseX = getClientX(e, that.touchId),
-		mouseY = getClientY(e, that.touchId);
+	    mouseY = getClientY(e, that.touchId);
 
 	//calc mouse movement diff
 	var diffMouseX = mouseX - that.prevMouseX,
-		diffMouseY = mouseY - that.prevMouseY;
+	    diffMouseY = mouseY - that.prevMouseY;
 
 	//absolute mouse coordinate
 	var mouseAbsX = mouseX,
-		mouseAbsY = mouseY;
+	    mouseAbsY = mouseY;
 
 	//if we are not fixed, our absolute position is relative to the doc
 	if (!that._isFixed) {
@@ -499,7 +476,7 @@ Draggable.prototype.drag = function(e) {
 	//calc movement x and y
 	//take absolute placing as it is the only reliable way (2x proved)
 	var x = mouseAbsX - that.initOffsetX - that.innerOffsetX - that.sniperOffsetX,
-		y = mouseAbsY - that.initOffsetY - that.innerOffsetY - that.sniperOffsetY;
+	    y = mouseAbsY - that.initOffsetY - that.innerOffsetY - that.sniperOffsetY;
 
 	//move element
 	that.move(x, y);
@@ -514,19 +491,19 @@ Draggable.prototype.drag = function(e) {
 };
 
 /** Manage touches */
-Draggable.prototype.setTouch = function(e) {
+Draggable.prototype.setTouch = function (e) {
 	if (!e.touches || this.isTouched()) return this;
 
 	//current touch id
 	this.touchId = e.touches[e.touches.length - 1].identifier;
 	return this;
 };
-Draggable.prototype.resetTouch = function() {
+Draggable.prototype.resetTouch = function () {
 	this.touchId = null;
 
 	return this;
 };
-Draggable.prototype.isTouched = function() {
+Draggable.prototype.isTouched = function () {
 	return this.touchId !== null;
 };
 
@@ -537,7 +514,7 @@ Draggable.prototype.touchId = null;
  * Update movement limits.
  * Refresh that.withinOffsets and that.limits.
  */
-Draggable.prototype.update = function(e) {
+Draggable.prototype.update = function (e) {
 	var that = this;
 
 	that._isFixed = isFixed(that.element);
@@ -548,7 +525,7 @@ Draggable.prototype.update = function(e) {
 	}
 
 	//update handles
-	that.currentHandles.forEach(function(handle) {
+	that.currentHandles.forEach(function (handle) {
 		off(handle, that._ns);
 	});
 
@@ -556,27 +533,23 @@ Draggable.prototype.update = function(e) {
 
 	that.currentHandles = q(that.handle);
 
-	that.currentHandles.forEach(function(handle) {
-		on(handle, 'mousedown' + that._ns + ' touchstart' + that._ns, function(e) {
+	that.currentHandles.forEach(function (handle) {
+		on(handle, 'mousedown' + that._ns + ' touchstart' + that._ns, function (e) {
 			//mark event as belonging to the draggy
 			if (!e.draggies) {
 				e.draggies = [];
 			}
 
 			//ignore draggies containing other draggies
-			if (
-				e.draggies.some(function(draggy) {
-					return that.element.contains(draggy.element);
-				})
-			) {
+			if (e.draggies.some(function (draggy) {
+				return that.element.contains(draggy.element);
+			})) {
 				return;
 			}
 			//ignore events happened within cancelEls
-			if (
-				cancelEls.some(function(cancelEl) {
-					return cancelEl.contains(e.target);
-				})
-			) {
+			if (cancelEls.some(function (cancelEl) {
+				return cancelEl.contains(e.target);
+			})) {
 				return;
 			}
 
@@ -629,7 +602,7 @@ Draggable.prototype.update = function(e) {
 /**
  * Update limits only from current position
  */
-Draggable.prototype.updateLimits = function() {
+Draggable.prototype.updateLimits = function () {
 	var that = this;
 
 	//initial translation offsets
@@ -672,31 +645,17 @@ Draggable.prototype.updateLimits = function() {
 	that.overflowY = that.pin.height - withinOffsets.height;
 
 	that.limits = {
-		left:
-			withinOffsets.left -
-			that.initOffsetX -
-			that.pin[0] -
-			(that.overflowX < 0 ? 0 : that.overflowX),
-		top:
-			withinOffsets.top -
-			that.initOffsetY -
-			that.pin[1] -
-			(that.overflowY < 0 ? 0 : that.overflowY),
-		right:
-			that.overflowX > 0
-				? 0
-				: withinOffsets.right - that.initOffsetX - that.pin[2],
-		bottom:
-			that.overflowY > 0
-				? 0
-				: withinOffsets.bottom - that.initOffsetY - that.pin[3],
+		left: withinOffsets.left - that.initOffsetX - that.pin[0] - (that.overflowX < 0 ? 0 : that.overflowX),
+		top: withinOffsets.top - that.initOffsetY - that.pin[1] - (that.overflowY < 0 ? 0 : that.overflowY),
+		right: that.overflowX > 0 ? 0 : withinOffsets.right - that.initOffsetX - that.pin[2],
+		bottom: that.overflowY > 0 ? 0 : withinOffsets.bottom - that.initOffsetY - that.pin[3]
 	};
 };
 
 /**
  * Update info regarding of movement
  */
-Draggable.prototype.updateInfo = function(x, y) {
+Draggable.prototype.updateInfo = function (x, y) {
 	var that = this;
 
 	//provide delta from prev state
@@ -717,18 +676,15 @@ Draggable.prototype.updateInfo = function(x, y) {
  * - css3 === false (slower but more precise and cross-browser)
  * - css3 === true (faster but may cause blurs on linux systems)
  */
-Draggable.prototype.getCoords = function() {
+Draggable.prototype.getCoords = function () {
 	if (!this.css3) {
 		// return [this.element.offsetLeft, this.element.offsetTop];
-		return [
-			parseCSSValue(css(this.element, 'left')),
-			parseCSSValue(css(this.element, 'top')),
-		];
+		return [parseCSSValue(css(this.element, 'left')), parseCSSValue(css(this.element, 'top'))];
 	} else {
 		return getTranslate(this.element).slice(0, 2) || [0, 0];
 	}
 };
-Draggable.prototype.setCoords = function(x, y) {
+Draggable.prototype.setCoords = function (x, y) {
 	if (this.css3) {
 		if (x == null) x = this.prevX;
 		if (y == null) y = this.prevY;
@@ -736,11 +692,7 @@ Draggable.prototype.setCoords = function(x, y) {
 		x = round(x, this.precision);
 		y = round(y, this.precision);
 
-		css(
-			this.element,
-			'transform',
-			['translate3d(', x, 'px,', y, 'px, 0)'].join(''),
-		);
+		css(this.element, 'transform', ['translate3d(', x, 'px,', y, 'px, 0)'].join(''));
 
 		this.updateInfo(x, y);
 	} else {
@@ -752,7 +704,7 @@ Draggable.prototype.setCoords = function(x, y) {
 
 		css(this.element, {
 			left: x,
-			top: y,
+			top: y
 		});
 
 		//update movement info
@@ -772,10 +724,10 @@ Draggable.prototype.handle;
 
 Object.defineProperties(Draggable.prototype, {
 	/**
-	 * Which area of draggable should not be outside the restriction area.
-	 * @type {(Array|number)}
-	 * @default [0,0,this.element.offsetWidth, this.element.offsetHeight]
-	 */
+  * Which area of draggable should not be outside the restriction area.
+  * @type {(Array|number)}
+  * @default [0,0,this.element.offsetWidth, this.element.offsetHeight]
+  */
 	pin: {
 		set: function set(value) {
 			if (isArray(value)) {
@@ -803,7 +755,7 @@ Object.defineProperties(Draggable.prototype, {
 			pin.width = this.offsets.width;
 			pin.height = this.offsets.height;
 			return pin;
-		},
+		}
 	},
 
 	/** Avoid initial mousemove */
@@ -813,12 +765,7 @@ Object.defineProperties(Draggable.prototype, {
 				this._threshold = [-val * 0.5, -val * 0.5, val * 0.5, val * 0.5];
 			} else if (val.length === 2) {
 				//Array(w,h)
-				this._threshold = [
-					-val[0] * 0.5,
-					-val[1] * 0.5,
-					val[0] * 0.5,
-					val[1] * 0.5,
-				];
+				this._threshold = [-val[0] * 0.5, -val[1] * 0.5, val[0] * 0.5, val[1] * 0.5];
 			} else if (val.length === 4) {
 				//Array(x1,y1,x2,y2)
 				this._threshold = val;
@@ -832,8 +779,8 @@ Object.defineProperties(Draggable.prototype, {
 
 		get: function get() {
 			return this._threshold || [0, 0, 0, 0];
-		},
-	},
+		}
+	}
 });
 
 /**
@@ -869,7 +816,7 @@ Draggable.prototype.sniperSlowdown = 0.85;
  * @default undefined
  * @enum {string}
  */
-Draggable.prototype.move = function(x, y) {
+Draggable.prototype.move = function (x, y) {
 	if (this.axis === 'x') {
 		if (x == null) x = this.prevX;
 		if (y == null) y = this.prevY;
@@ -878,11 +825,7 @@ Draggable.prototype.move = function(x, y) {
 
 		if (this.repeat) {
 			var w = limits.right - limits.left;
-			var oX =
-				-this.initOffsetX +
-				this.withinOffsets.left -
-				this.pin[0] -
-				Math.max(0, this.overflowX);
+			var oX = -this.initOffsetX + this.withinOffsets.left - this.pin[0] - Math.max(0, this.overflowX);
 			x = loop(x - oX, w) + oX;
 		} else {
 			x = between(x, limits.left, limits.right);
@@ -897,11 +840,7 @@ Draggable.prototype.move = function(x, y) {
 
 		if (this.repeat) {
 			var h = limits.bottom - limits.top;
-			var oY =
-				-this.initOffsetY +
-				this.withinOffsets.top -
-				this.pin[1] -
-				Math.max(0, this.overflowY);
+			var oY = -this.initOffsetY + this.withinOffsets.top - this.pin[1] - Math.max(0, this.overflowY);
 			y = loop(y - oY, h) + oY;
 		} else {
 			y = between(y, limits.top, limits.bottom);
@@ -917,16 +856,8 @@ Draggable.prototype.move = function(x, y) {
 		if (this.repeat) {
 			var w = limits.right - limits.left;
 			var h = limits.bottom - limits.top;
-			var oX =
-				-this.initOffsetX +
-				this.withinOffsets.left -
-				this.pin[0] -
-				Math.max(0, this.overflowX);
-			var oY =
-				-this.initOffsetY +
-				this.withinOffsets.top -
-				this.pin[1] -
-				Math.max(0, this.overflowY);
+			var oX = -this.initOffsetX + this.withinOffsets.left - this.pin[0] - Math.max(0, this.overflowX);
+			var oY = -this.initOffsetY + this.withinOffsets.top - this.pin[1] - Math.max(0, this.overflowY);
 			if (this.repeat === 'x') {
 				x = loop(x - oX, w) + oX;
 			} else if (this.repeat === 'y') {
@@ -953,10 +884,10 @@ function isZeroArray(arr) {
 }
 
 /** Clean all memory-related things */
-Draggable.prototype.destroy = function() {
+Draggable.prototype.destroy = function () {
 	var that = this;
 
-	that.currentHandles.forEach(function(handle) {
+	that.currentHandles.forEach(function (handle) {
 		off(handle, that._ns);
 	});
 
@@ -975,7 +906,7 @@ Draggable.prototype.destroy = function() {
 
 function q(str) {
 	if (Array.isArray(str)) {
-		return str.map(q).reduce(function(prev, curr) {
+		return str.map(q).reduce(function (prev, curr) {
 			return prev.concat(curr);
 		}, []);
 	} else if (str instanceof HTMLElement) {

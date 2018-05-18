@@ -263,7 +263,7 @@ Draggable.prototype.state = {
 					//get speed as average of prev and current (prevent div by zero)
 					var v = Math.min(
 						that.velocity * delta / (1 + elapsed),
-						that.maxSpeed,
+						that.maxSpeed
 					);
 					that.speed = 0.8 * v + 0.2 * that.speed;
 
@@ -372,7 +372,7 @@ Draggable.prototype.state = {
 					} else {
 						that.state = 'idle';
 					}
-				},
+				}
 			);
 
 			//move via transform
@@ -425,7 +425,7 @@ Draggable.prototype.state = {
 			//calc target point & animate to it
 			that.move(
 				that.prevX + that.speed * Math.cos(that.angle),
-				that.prevY + that.speed * Math.sin(that.angle),
+				that.prevY + that.speed * Math.sin(that.angle)
 			);
 
 			that.speed = 0;
@@ -737,7 +737,7 @@ Draggable.prototype.setCoords = function(x, y) {
 		css(
 			this.element,
 			'transform',
-			['translate3d(', x, 'px,', y, 'px, 0)'].join(''),
+			['translate3d(', x, 'px,', y, 'px, 0)'].join('')
 		);
 
 		this.updateInfo(x, y);
