@@ -308,8 +308,8 @@ Draggable.prototype.state = {
 				e.preventDefault();
 
 				//compare movement to the threshold
-				var clientX = getClientX(e, that.touchIdx);
-				var clientY = getClientY(e, that.touchIdx);
+				var clientX = getClientX(e, that.touchId);
+				var clientY = getClientY(e, that.touchId);
 				var difX = that.prevMouseX - clientX;
 				var difY = that.prevMouseY - clientY;
 
@@ -460,8 +460,8 @@ Draggable.prototype.drag = function (e) {
 
 	e.preventDefault();
 
-	var mouseX = getClientX(e, that.touchIdx),
-		mouseY = getClientY(e, that.touchIdx);
+	var mouseX = getClientX(e, that.touchId),
+		mouseY = getClientY(e, that.touchId);
 
 	//calc mouse movement diff
 	var diffMouseX = mouseX - that.prevMouseX,
@@ -507,33 +507,25 @@ Draggable.prototype.drag = function (e) {
 };
 
 
-/** Current number of draggable touches */
-var touches = 0;
-
-
 /** Manage touches */
 Draggable.prototype.setTouch = function (e) {
 	if (!e.touches || this.isTouched()) return this;
 
-	//current touch index
-	this.touchIdx = touches;
-	touches++;
-
+	//current touch id
+	this.touchId = e.touches[e.touches.length - 1].identifier;
 	return this;
 };
 Draggable.prototype.resetTouch = function () {
-	touches = 0;
-	this.touchIdx = null;
+	this.touchId = null;
 
 	return this;
 };
 Draggable.prototype.isTouched = function () {
-	return this.touchIdx !== null;
+	return this.touchId !== null;
 };
 
-
-/** Index to fetch touch number from event */
-Draggable.prototype.touchIdx = null;
+/** Touch identifier from event */
+Draggable.prototype.touchId = null;
 
 
 /**
@@ -596,12 +588,12 @@ Draggable.prototype.update = function (e) {
 	//if event passed - update acc to event
 	if (e) {
 		//take last mouse position from the event
-		that.prevMouseX = getClientX(e, that.touchIdx);
-		that.prevMouseY = getClientY(e, that.touchIdx);
+		that.prevMouseX = getClientX(e, that.touchId);
+		that.prevMouseY = getClientY(e, that.touchId);
 
 		//if mouse is within the element - take offset normally as rel displacement
-		that.innerOffsetX = -thatClientRect.left + getClientX(e, that.touchIdx);
-		that.innerOffsetY = -thatClientRect.top + getClientY(e, that.touchIdx);
+		that.innerOffsetX = -thatClientRect.left + getClientX(e, that.touchId);
+		that.innerOffsetY = -thatClientRect.top + getClientY(e, that.touchId);
 	}
 	//if no event - suppose pin-centered event
 	else {
