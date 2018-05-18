@@ -24,7 +24,6 @@ const getClientY = require('get-client-xy').y;
 //utils
 const isArray = require('mutype/is-array');
 const isNumber = require('mutype/is-number');
-const isString = require('mutype/is-string');
 const isFn = require('mutype/is-fn');
 const defineState = require('define-state');
 const extend = require('xtend/mutable');
