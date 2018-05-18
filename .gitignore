@@ -40,7 +40,6 @@ Thumbs.db
 
 # My extension #
 ################
-*.lock
 *.bak
 lsn
 *.dump
