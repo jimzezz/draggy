@@ -1,5 +1,5 @@
 ---
-Note. This is fork of https://github.com/dy/draggy with some fixes. 
+Note. This is a fork of https://github.com/dy/draggy with some fixes. 
 It is only used by Jokersystemet for legacy reasons. 
 ---
 

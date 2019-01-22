@@ -1,7 +1,7 @@
 {
   "name": "@trmediaab/trdraggy",
   "version": "1.6.6",
-  "description": "Make element draggable and stuff, you know. This is fork of https://github.com/dy/draggy with some fixes.",
+  "description": "Make element draggable and stuff, you know. This is a fork of https://github.com/dy/draggy with some fixes.",
   "main": "dist/index.js",
   "scripts": {
     "watch": "watchify -r ./index.js:draggy -r mucss -d -o test/bundle.js",
