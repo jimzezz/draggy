@@ -1,3 +1,9 @@
+---
+Note. This is fork of https://github.com/dy/draggy with some fixes. 
+It is only used by Jokersystemet for legacy reasons. 
+---
+
+
 <h1>
 	<img src="https://cdn.rawgit.com/dfcreative/draggy/design/logo.png"/><br/>
 
