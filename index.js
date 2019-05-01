@@ -191,7 +191,7 @@ Draggable.prototype.initDroppable = function() {
 Draggable.prototype.state = {
 	//idle
 	_: {
-		before: function() {
+		enter: function() {
 			var that = this;
 
 			that.element.classList.add('draggy-idle');
@@ -239,7 +239,7 @@ Draggable.prototype.state = {
 				that.state = 'threshold';
 			});
 		},
-		after: function() {
+		exit: function() {
 			var that = this;
 
 			that.element.classList.remove('draggy-idle');
@@ -262,7 +262,7 @@ Draggable.prototype.state = {
 
 					//get speed as average of prev and current (prevent div by zero)
 					var v = Math.min(
-						that.velocity * delta / (1 + elapsed),
+						(that.velocity * delta) / (1 + elapsed),
 						that.maxSpeed
 					);
 					that.speed = 0.8 * v + 0.2 * that.speed;
@@ -280,7 +280,7 @@ Draggable.prototype.state = {
 	},
 
 	threshold: {
-		before: function() {
+		enter: function() {
 			var that = this;
 
 			//ignore threshold state, if threshold is none
@@ -325,7 +325,7 @@ Draggable.prototype.state = {
 			});
 		},
 
-		after: function() {
+		exit: function() {
 			var that = this;
 
 			that.element.classList.remove('draggy-threshold');
@@ -335,7 +335,7 @@ Draggable.prototype.state = {
 	},
 
 	drag: {
-		before: function() {
+		enter: function() {
 			var that = this;
 
 			//reduce dragging clutter
@@ -381,7 +381,7 @@ Draggable.prototype.state = {
 			});
 		},
 
-		after: function() {
+		exit: function() {
 			var that = this;
 
 			//enable document interactivity
@@ -401,7 +401,7 @@ Draggable.prototype.state = {
 	},
 
 	release: {
-		before: function() {
+		enter: function() {
 			var that = this;
 
 			that.element.classList.add('draggy-release');
@@ -432,7 +432,7 @@ Draggable.prototype.state = {
 			that.emit('track');
 		},
 
-		after: function() {
+		exit: function() {
 			var that = this;
 
 			that.element.classList.remove('draggy-release');
