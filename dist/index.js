@@ -193,7 +193,7 @@ Draggable.prototype.initDroppable = function () {
 Draggable.prototype.state = {
 	//idle
 	_: {
-		before: function before() {
+		enter: function enter() {
 			var that = this;
 
 			that.element.classList.add('draggy-idle');
@@ -241,7 +241,7 @@ Draggable.prototype.state = {
 				that.state = 'threshold';
 			});
 		},
-		after: function after() {
+		exit: function exit() {
 			var that = this;
 
 			that.element.classList.remove('draggy-idle');
@@ -279,7 +279,7 @@ Draggable.prototype.state = {
 	},
 
 	threshold: {
-		before: function before() {
+		enter: function enter() {
 			var that = this;
 
 			//ignore threshold state, if threshold is none
@@ -319,7 +319,7 @@ Draggable.prototype.state = {
 			});
 		},
 
-		after: function after() {
+		exit: function exit() {
 			var that = this;
 
 			that.element.classList.remove('draggy-threshold');
@@ -329,7 +329,7 @@ Draggable.prototype.state = {
 	},
 
 	drag: {
-		before: function before() {
+		enter: function enter() {
 			var that = this;
 
 			//reduce dragging clutter
@@ -366,7 +366,7 @@ Draggable.prototype.state = {
 			});
 		},
 
-		after: function after() {
+		exit: function exit() {
 			var that = this;
 
 			//enable document interactivity
@@ -386,7 +386,7 @@ Draggable.prototype.state = {
 	},
 
 	release: {
-		before: function before() {
+		enter: function enter() {
 			var that = this;
 
 			that.element.classList.add('draggy-release');
@@ -411,7 +411,7 @@ Draggable.prototype.state = {
 			that.emit('track');
 		},
 
-		after: function after() {
+		exit: function exit() {
 			var that = this;
 
 			that.element.classList.remove('draggy-release');
